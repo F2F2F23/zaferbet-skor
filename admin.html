@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaferbet Admin — Günlük Skor Yarışması</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#080c0a;--bg2:#0e1410;--bg3:#141c16;--border:#1e2e22;--neon:#00e676;--neon2:#00c853;--neon-dim:rgba(0,230,118,.1);--green:#00e676;--red:#ff3d57;--blue:#40c4ff;--text:#d4e8d8;--muted:#5a7a62;--white:#f0fff4}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;padding:24px;min-height:100vh}
+h1{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;text-transform:uppercase;letter-spacing:3px;color:var(--neon);margin-bottom:4px}
+.sub{font-size:12px;color:var(--muted);margin-bottom:24px;letter-spacing:.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:16px;text-align:center;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--neon);box-shadow:0 0 8px var(--neon)}
+.stat-n{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;color:var(--neon)}
+.stat-l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:16px;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--neon);border-radius:4px 0 0 4px}
+.card-title{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--white);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:3px;font-size:14px;outline:none;font-family:'Exo 2',sans-serif;transition:border-color .2s}
+.input:focus{border-color:var(--neon);box-shadow:0 0 0 2px rgba(0,230,118,.08)}
+.input-row{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
+.vs-label{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--muted);text-align:center;padding-bottom:10px}
+.btn{padding:10px 18px;border:none;border-radius:3px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s}
+.btn-gold{background:var(--neon);color:#000}
+.btn-gold:hover{background:var(--neon2);box-shadow:0 0 14px rgba(0,230,118,.3)}
+.btn-green{background:rgba(0,230,118,.1);color:var(--neon);border:1px solid rgba(0,230,118,.3)}
+.btn-green:hover{background:rgba(0,230,118,.2)}
+.btn-red{background:rgba(255,61,87,.1);color:var(--red);border:1px solid rgba(255,61,87,.3)}
+.btn-red:hover{background:rgba(255,61,87,.2)}
+.btn-blue{background:rgba(64,196,255,.1);color:var(--blue);border:1px solid rgba(64,196,255,.3)}
+.btn-blue:hover{background:rgba(64,196,255,.2)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--bg3);padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3)}
+.badge{display:inline-block;padding:2px 8px;border-radius:2px;font-size:11px;font-weight:600;letter-spacing:.5px}
+.badge-win{background:rgba(0,230,118,.15);color:var(--neon)}
+.badge-lose{background:rgba(255,61,87,.15);color:var(--red)}
+.result-box{background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:3px;padding:12px 16px;margin-top:12px;font-size:12px;color:var(--neon);display:none;letter-spacing:.5px}
+.result-box.show{display:block}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--neon);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mac-aktif{background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.2);border-radius:3px;padding:14px 16px;margin-bottom:16px}
+.mac-aktif-title{font-size:11px;color:var(--neon);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.mac-aktif-icerik{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--white);letter-spacing:1px}
+</style>
+</head>
+
+<body>
+
+<h1>⚙️ Zaferbet Admin — Günlük Skor</h1>
+<p class="sub">Günlük maç ayarı · Tahmin takibi · Kazanan belirleme</p>
+
+<div class="grid">
+  <div class="stat-card"><div class="stat-n" id="stat-total">—</div><div class="stat-l">Bugün Katılım</div></div>
+  <div class="stat-card"><div class="stat-n" id="stat-users">—</div><div class="stat-l">Benzersiz Üye</div></div>
+  <div class="stat-card"><div class="stat-n" id="stat-win">—</div><div class="stat-l">Doğru Tahmin</div></div>
+  <div class="stat-card"><div class="stat-n" id="stat-mac">—</div><div class="stat-l">Toplam Maç</div></div>
+</div>
+
+<!-- AKTİF MAÇ -->
+<div class="card">
+  <div class="card-title">⚽ Günün Maçını Ayarla</div>
+  <div class="mac-aktif" id="aktif-mac-box" style="display:none">
+    <div class="mac-aktif-title">✅ Şu An Aktif Maç</div>
+    <div class="mac-aktif-icerik" id="aktif-mac-icerik"></div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Lig / Turnuva</label>
+    <input class="input" id="lig" placeholder="FIFA Dünya Kupası 2026" value="FIFA Dünya Kupası 2026">
+  </div>
+  <div class="input-row">
+    <div class="form-group">
+      <label class="form-label">Ev Sahibi</label>
+      <input class="input" id="ev-sahibi" placeholder="Takım adı...">
+    </div>
+    <div class="vs-label">VS</div>
+    <div class="form-group">
+      <label class="form-label">Deplasman</label>
+      <input class="input" id="deplasman" placeholder="Takım adı...">
+    </div>
+  </div>
+  <div class="input-row">
+    <div class="form-group">
+      <label class="form-label">Maç Saati</label>
+      <input class="input" id="mac-saat" placeholder="örn: 21:00">
+    </div>
+    <div></div>
+    <div class="form-group">
+      <label class="form-label">Stat / Şehir</label>
+      <input class="input" id="mac-stat" placeholder="örn: Los Angeles">
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-gold" onclick="macAyarla()">✅ Maçı Yayınla</button>
+    <button class="btn btn-red" onclick="macKapat()">🔒 Yarışmayı Kapat</button>
+  </div>
+  <div class="result-box" id="mac-result"></div>
+</div>
+
+<!-- SONUÇ GİRİŞİ -->
+<div class="card">
+  <div class="card-title">🏆 Gerçek Sonucu Gir & Kazananları Bul</div>
+  <div class="input-row">
+    <div class="form-group">
+      <label class="form-label">Ev Sahibi Golü</label>
+      <input class="input" id="gercek-ev" type="number" min="0" value="0" style="font-size:20px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700">
+    </div>
+    <div class="vs-label">-</div>
+    <div class="form-group">
+      <label class="form-label">Deplasman Golü</label>
+      <input class="input" id="gercek-dep" type="number" min="0" value="0" style="font-size:20px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700">
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-green" onclick="kazananlariHesapla()">🎯 Kazananları Hesapla</button>
+    <button class="btn btn-blue" onclick="verileriYukle()">🔄 Tahminleri Yükle</button>
+  </div>
+  <div id="kazananlar-sonuc" style="margin-top:14px"></div>
+</div>
+
+<!-- TAHMİNLER TABLOSU -->
+<div class="card">
+  <div class="card-title">📋 Bugünün Tahminleri</div>
+  <div id="data-table-container"><p style="color:var(--muted);font-size:13px">Verileri yüklemek için butona bas.</p></div>
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdVGTIxC7SfTJhXjK1zF1Q24sNvM1SeXQFvM_3oyznfGwizt0UJJBwrsIymA-v610/exec';
+const ZAFERBET_SHEET_ID = '1JofqqTJvO0g3XIyPcehTFHWKELdLFjtLF-NG9WsN468';
+const MAC_AYAR_SHEET_ID = '1E5jpMrk70L-ysZxbrwZoJPlEd-Jac7m90bJ6R1ZPIbg';
+let allData = [];
+
+async function macAyarla() {
+  const ev = document.getElementById('ev-sahibi').value.trim();
+  const dep = document.getElementById('deplasman').value.trim();
+  if (!ev || !dep) { alert('Ev sahibi ve deplasman takımını gir!'); return; }
+
+  const bugun = new Date().toISOString().split('T')[0];
+  const macId = `${bugun}_${ev}_${dep}`.replace(/\s/g,'_');
+
+  const params = new URLSearchParams({
+    action: 'setMac',
+    sheetId: MAC_AYAR_SHEET_ID,
+    ev, dep,
+    lig: document.getElementById('lig').value || 'FIFA Dünya Kupası 2026',
+    saat: document.getElementById('mac-saat').value || '',
+    stat: document.getElementById('mac-stat').value || '',
+    macId, tarih: bugun, aktif: '1'
+  });
+
+  try {
+    const res = await fetch(APPS_SCRIPT_URL + '?' + params.toString());
+    const text = await res.text();
+    if (text === 'OK') {
+      document.getElementById('aktif-mac-box').style.display = 'block';
+      document.getElementById('aktif-mac-icerik').textContent = `${ev} vs ${dep}`;
+      document.getElementById('mac-result').textContent = `✅ "${ev} vs ${dep}" maçı yayınlandı!`;
+      document.getElementById('mac-result').classList.add('show');
+      setTimeout(() => document.getElementById('mac-result').classList.remove('show'), 4000);
+    } else {
+      alert('Hata: ' + text);
+    }
+  } catch(e) {
+    alert('Bağlantı hatası: ' + e.message);
+  }
+}
+
+async function macKapat() {
+  if (!confirm('Yarışmayı kapatmak istediğinden emin misin?')) return;
+  const params = new URLSearchParams({ action: 'closeMac', sheetId: MAC_AYAR_SHEET_ID });
+  try {
+    await fetch(APPS_SCRIPT_URL + '?' + params.toString());
+    document.getElementById('aktif-mac-box').style.display = 'none';
+    alert('Yarışma kapatıldı.');
+  } catch(e) {
+    alert('Hata: ' + e.message);
+  }
+}
+
+async function verileriYukle() {
+  document.getElementById('data-table-container').innerHTML = '<p style="color:var(--muted);font-size:13px"><span class="spinner"></span>Yükleniyor...</p>';
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=getZaferbetData&sheetId=${ZAFERBET_SHEET_ID}`);
+    const rows = await res.json();
+    allData = Array.isArray(rows) ? rows.slice(1).map(r => ({
+      zaman: r[0], kullanici: r[1], mac: r[2], lig: r[3], tarih: r[4], secim: r[5], macId: r[6]
+    })).filter(r => r.kullanici) : [];
+
+    // Bugünün macId'sini bul (aktif maçtan)
+    const bugunMacId = allData.length ? allData[allData.length-1].macId : '';
+    const bugunData = bugunMacId ? allData.filter(r => r.macId === bugunMacId) : allData;
+
+    document.getElementById('stat-total').textContent = bugunData.length;
+    document.getElementById('stat-users').textContent = new Set(bugunData.map(r=>r.kullanici)).size;
+    document.getElementById('stat-mac').textContent = new Set(allData.map(r=>r.macId)).size;
+
+    if (!allData.length) {
+      document.getElementById('data-table-container').innerHTML = '<p style="color:var(--muted);font-size:13px">Henüz katılım yok.</p>';
+      return;
+    }
+
+    document.getElementById('data-table-container').innerHTML = `
+      <table>
+        <thead><tr><th>Kullanıcı</th><th>Maç</th><th>Tahmin</th><th>Zaman</th></tr></thead>
+        <tbody>${allData.map(r=>`<tr>
+          <td><strong>${r.kullanici}</strong></td>
+          <td style="color:var(--muted)">${r.mac}</td>
+          <td><strong style="color:var(--neon)">${r.secim}</strong></td>
+          <td style="color:var(--muted);font-size:11px">${r.zaman}</td>
+        </tr>`).join('')}</tbody>
+      </table>`;
+  } catch(e) {
+    document.getElementById('data-table-container').innerHTML = '<p style="color:var(--red);font-size:13px">Veri yüklenemedi.</p>';
+  }
+}
+
+function kazananlariHesapla() {
+  if (!allData.length) { alert('Önce verileri yükle!'); return; }
+  const ev = parseInt(document.getElementById('gercek-ev').value) || 0;
+  const dep = parseInt(document.getElementById('gercek-dep').value) || 0;
+  const gercekSkor = `${ev} - ${dep}`;
+  const bugunData = allData;
+
+  const kazananlar = bugunData.filter(r => {
+    const m = r.secim?.match(/\d+\s*-\s*\d+/);
+    return m && m[0].replace(/\s/g,'') === gercekSkor.replace(/\s/g,'');
+  });
+
+  document.getElementById('stat-win').textContent = kazananlar.length;
+
+  if (!kazananlar.length) {
+    document.getElementById('kazananlar-sonuc').innerHTML = `
+      <div style="background:var(--bg3);border-radius:8px;padding:16px;text-align:center;color:var(--muted);font-size:13px">
+        Gerçek skor: <strong style="color:var(--gold)">${gercekSkor}</strong><br>Bu skoru bilen kimse yok.
+      </div>`;
+    return;
+  }
+
+  document.getElementById('kazananlar-sonuc').innerHTML = `
+    <div style="background:rgba(0,208,132,.08);border:1px solid rgba(0,208,132,.3);border-radius:8px;padding:16px;margin-bottom:10px;text-align:center">
+      <div style="font-size:13px;color:var(--green);margin-bottom:8px">🎯 Gerçek skor: <strong>${gercekSkor}</strong> · ${kazananlar.length} kazanan</div>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>Kazanan Üye</th><th>Tahmini</th></tr></thead>
+      <tbody>${kazananlar.map((r,i)=>`<tr>
+        <td style="color:var(--gold);font-weight:700">${i+1}</td>
+        <td><strong>${r.kullanici}</strong></td>
+        <td><span class="badge badge-win">${r.secim}</span></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+}
+
+verileriYukle();
+</script>
+</body>
+</html>
