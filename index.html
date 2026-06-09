@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaferbet — Günlük Skor Yarışması</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080c0a;
+  --bg2:#0e1410;
+  --bg3:#141c16;
+  --bg4:#1a2620;
+  --border:#1e2e22;
+  --neon:#00e676;
+  --neon2:#00c853;
+  --neon-dim:rgba(0,230,118,.12);
+  --neon-glow:rgba(0,230,118,.25);
+  --text:#d4e8d8;
+  --muted:#5a7a62;
+  --white:#f0fff4;
+  --red:#ff3d57;
+  --gold:#ffd740;
+}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* HERO */
+.hero{position:relative;padding:32px 20px 24px;text-align:center;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(0,230,118,.15) 0%,transparent 70%);pointer-events:none}
+.hero-logo{display:inline-flex;align-items:center;gap:10px;margin-bottom:16px}
+.hero-logo-icon{width:36px;height:36px;background:var(--neon);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px var(--neon-glow)}
+.hero-logo-text{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;letter-spacing:3px;color:var(--neon);text-transform:uppercase}
+.hero-badge{display:inline-block;border:1px solid var(--neon);color:var(--neon);font-family:'Rajdhani',sans-serif;font-weight:600;font-size:12px;letter-spacing:3px;padding:5px 16px;border-radius:2px;margin-bottom:14px;text-transform:uppercase;background:var(--neon-dim)}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(28px,6vw,52px);font-weight:700;text-transform:uppercase;color:var(--white);line-height:1;letter-spacing:2px}
+.hero h1 span{color:var(--neon);text-shadow:0 0 20px var(--neon-glow)}
+.hero-sub{font-size:13px;color:var(--muted);margin-top:8px;letter-spacing:.5px}
+
+/* MAIN */
+.main{max-width:560px;margin:0 auto;padding:20px 16px 40px}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:14px;position:relative}
+.card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--neon);border-radius:4px 0 0 4px}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.card-icon{width:32px;height:32px;border-radius:3px;background:var(--neon-dim);border:1px solid rgba(0,230,118,.2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.card-title{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:2px;color:var(--white)}
+.card-desc{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.5px}
+
+/* FORM */
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);font-family:'Exo 2',sans-serif;font-size:14px;padding:10px 12px;border-radius:3px;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--neon);box-shadow:0 0 0 2px rgba(0,230,118,.08)}
+.form-input::placeholder{color:var(--muted)}
+
+/* INFO NOTE */
+.info-note{background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.15);border-radius:3px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px;align-items:flex-start}
+.info-note-icon{font-size:16px;line-height:1.2;flex-shrink:0}
+.info-note-text{font-size:12px;color:var(--muted);line-height:1.6}
+.info-note-text strong{color:var(--text)}
+
+/* MAÇ KUTUSU */
+.match-box{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:20px 16px;margin-bottom:16px;position:relative;overflow:hidden}
+.match-box::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80px;height:1px;background:var(--neon);box-shadow:0 0 8px var(--neon)}
+.match-league{font-size:11px;color:var(--neon);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:16px;font-weight:600}
+.match-teams{display:flex;align-items:center;gap:12px}
+.match-team{flex:1;text-align:center}
+.match-team-name{font-family:'Rajdhani',sans-serif;font-size:clamp(16px,3vw,22px);font-weight:700;color:var(--white);text-transform:uppercase;letter-spacing:1px;line-height:1.2}
+.match-vs{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--muted);letter-spacing:2px;text-align:center;flex-shrink:0}
+.match-info{font-size:11px;color:var(--muted);text-align:center;margin-top:12px;letter-spacing:.5px}
+
+/* SKOR GİRİŞİ */
+.score-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:16px;margin-bottom:14px}
+.score-title{font-size:11px;color:var(--neon);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:14px;font-weight:600}
+.score-row{display:flex;align-items:center;justify-content:center;gap:10px}
+.score-col{text-align:center;flex:1}
+.score-col-name{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.score-btns{display:flex;align-items:center;justify-content:center;gap:6px}
+.s-btn{width:36px;height:36px;background:var(--bg4);border:1px solid var(--border);color:var(--text);font-size:18px;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.s-btn:hover{border-color:var(--neon);color:var(--neon);background:var(--neon-dim)}
+.s-num{min-width:52px;height:48px;background:var(--bg);border:1px solid rgba(0,230,118,.3);border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--neon);box-shadow:inset 0 0 8px rgba(0,230,118,.05)}
+.score-sep{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:var(--border);flex-shrink:0}
+
+/* SUBMIT */
+.submit-btn{width:100%;padding:14px;background:var(--neon);color:#000;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;letter-spacing:3px;text-transform:uppercase;border:none;border-radius:3px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.submit-btn::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:0;height:0;background:rgba(255,255,255,.2);border-radius:50%;transition:width .4s,height .4s}
+.submit-btn:hover{background:var(--neon2);box-shadow:0 0 20px var(--neon-glow)}
+.submit-btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.submit-btn-ghost{background:transparent;color:var(--neon);border:1px solid var(--neon);box-shadow:none}
+.submit-btn-ghost:hover{background:var(--neon-dim);box-shadow:0 0 10px var(--neon-glow)}
+
+/* KAPALIYSA */
+.closed-box{border:1px solid rgba(255,61,87,.2);background:rgba(255,61,87,.05);border-radius:4px;padding:24px;text-align:center}
+.closed-icon{font-size:32px;margin-bottom:10px}
+.closed-title{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:2px}
+.closed-text{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* LOADING */
+.loading-box{text-align:center;padding:40px;color:var(--muted);font-size:12px;letter-spacing:1px}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--neon);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sm-spin{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--neon);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px}
+
+.loading{display:none;text-align:center;padding:10px;color:var(--muted);font-size:12px}
+.loading.show{display:block}
+
+/* SUCCESS / ERROR */
+.success-box{background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.25);border-radius:4px;padding:20px;text-align:center;display:none;margin-top:12px}
+.success-box.show{display:block}
+.success-icon{font-size:32px;margin-bottom:8px}
+.success-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--neon);text-transform:uppercase;letter-spacing:2px}
+.success-text{font-size:12px;color:var(--muted);margin-top:6px}
+.error-box{background:rgba(255,61,87,.06);border:1px solid rgba(255,61,87,.25);border-radius:3px;padding:10px 14px;font-size:12px;color:var(--red);display:none;margin-top:10px}
+.error-box.show{display:block}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid rgba(0,230,118,.2);border-radius:4px;padding:28px 24px;max-width:380px;width:100%;transform:translateY(16px);transition:transform .2s;box-shadow:0 0 40px rgba(0,230,118,.1)}
+.modal-overlay.show .modal{transform:translateY(0)}
+.modal-icon{font-size:36px;text-align:center;margin-bottom:10px}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--white);text-align:center;margin-bottom:8px}
+.modal-desc{font-size:12px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:6px}
+.modal-secim{background:var(--bg3);border-radius:3px;padding:12px;margin:12px 0;font-family:'Rajdhani',sans-serif;font-size:20px;font-weight:700;color:var(--neon);text-align:center;letter-spacing:2px;border:1px solid rgba(0,230,118,.2)}
+.modal-uyari{font-size:11px;color:var(--muted);text-align:center;margin-bottom:16px;letter-spacing:.5px}
+.modal-buttons{display:flex;gap:8px}
+.modal-confirm{flex:1;padding:12px;background:var(--neon);color:#000;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:3px;cursor:pointer}
+.modal-confirm:hover{background:var(--neon2)}
+.modal-cancel{flex:1;padding:12px;background:transparent;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border);border-radius:3px;cursor:pointer}
+.modal-cancel:hover{color:var(--text);border-color:var(--text)}
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="onay-modal">
+  <div class="modal">
+    <div class="modal-icon">⚽</div>
+    <div class="modal-title">Tahmini Onayla</div>
+    <div class="modal-desc">Aşağıdaki skoru göndermek üzeresiniz:</div>
+    <div class="modal-secim" id="modal-secim-text"></div>
+    <div class="modal-uyari">⚡ Her maça yalnızca 1 kez katılabilirsiniz. Geri alınamaz!</div>
+    <div class="modal-buttons">
+      <button class="modal-cancel" onclick="modalKapat()">Geri Dön</button>
+      <button class="modal-confirm" onclick="modalOnayla()">Gönder ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-logo">
+    <div class="hero-logo-icon"></div>
+    <div class="hero-logo-text">ZAFERBET</div>
+  </div>
+  <h1>Günlük <span>Skor</span><br>Yarışması</h1>
+  <p class="hero-sub">Günün maçının skorunu bil · Ödülü kap</p>
+</div>
+
+<div class="main">
+
+  <div class="card">
+    <div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:2px;color:var(--white)">Kullanıcı Girişi</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kullanıcı Adın</label>
+      <input type="text" class="form-input" id="username" placeholder="zaferbet kullanıcı adını gir...">
+    </div>
+    <div class="info-note">
+      <div class="info-note-icon">⚡</div>
+      <div class="info-note-text"><strong>Her maça yalnızca 1 kez</strong> katılabilirsiniz. Gönderilen tahminler <strong>değiştirilemez</strong>. Dikkatlice karar verin.</div>
+    </div>
+    <div class="error-box" id="username-error">Lütfen kullanıcı adını gir!</div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:2px;color:var(--white)">Günün Maçı</div>
+      <div style="font-size:11px;color:var(--neon);letter-spacing:1px" id="match-date-label">Yükleniyor...</div>
+    </div>
+    <div id="match-container">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <div>Yükleniyor...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <div style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:2px;color:var(--white)">Tahminimi Kontrol Et</div>
+    </div>
+    <button class="submit-btn submit-btn-ghost" onclick="tahminimiBul()">Sorgula →</button>
+    <div id="tahmin-sonuc" style="margin-top:12px"></div>
+  </div>
+
+</div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwKmgddGj9V4PS0jq-rUqC_BWWApsAiZXQ8PH3LHSQtLXqZb0Jx15CD3HP-3WVz0pgp/exec';
+const ZAFERBET_SHEET_ID = '1JofqqTJvO0g3XIyPcehTFHWKELdLFjtLF-NG9WsN468';
+const MAC_AYAR_SHEET_ID = '1E5jpMrk70L-ysZxbrwZoJPlEd-Jac7m90bJ6R1ZPIbg';
+
+let guncelMac = null;
+let pendingSubmit = null;
+const scoreValues = { ev: 0, dep: 0 };
+
+function changeScore(key, delta) {
+  scoreValues[key] = Math.max(0, (scoreValues[key] || 0) + delta);
+  document.getElementById('score-' + key).textContent = scoreValues[key];
+}
+
+function modalKapat() {
+  document.getElementById('onay-modal').classList.remove('show');
+  pendingSubmit = null;
+}
+
+function modalOnayla() {
+  document.getElementById('onay-modal').classList.remove('show');
+  if (pendingSubmit) pendingSubmit();
+  pendingSubmit = null;
+}
+
+async function guncelMaciYukle() {
+  try {
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=getMac&sheetId=${MAC_AYAR_SHEET_ID}`);
+    const data = await res.json();
+    if (!data || !data.ev) { kapalıGoster('Bugün için henüz maç belirlenmedi.'); return; }
+    guncelMac = data;
+    document.getElementById('match-date-label').textContent = new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+    macBoxGoster(data);
+  } catch(e) {
+    kapalıGoster('Maç bilgisi yüklenemedi, lütfen sayfayı yenileyin.');
+  }
+}
+
+function macBoxGoster(mac) {
+  document.getElementById('match-container').innerHTML = `
+    <div class="match-box">
+      <div class="match-league">${mac.lig || 'FIFA Dünya Kupası 2026'}${mac.saat ? ' · ' + mac.saat : ''}</div>
+      <div class="match-teams">
+        <div class="match-team"><div class="match-team-name">${mac.ev}</div></div>
+        <div class="match-vs">VS</div>
+        <div class="match-team"><div class="match-team-name">${mac.dep}</div></div>
+      </div>
+      ${mac.stat ? `<div class="match-info">📍 ${mac.stat}</div>` : ''}
+    </div>
+    <div class="score-wrap">
+      <div class="score-title">Skor Tahmini Gir</div>
+      <div class="score-row">
+        <div class="score-col">
+          <div class="score-col-name">${mac.ev}</div>
+          <div class="score-btns">
+            <button class="s-btn" onclick="changeScore('ev',-1)">−</button>
+            <div class="s-num" id="score-ev">0</div>
+            <button class="s-btn" onclick="changeScore('ev',1)">+</button>
+          </div>
+        </div>
+        <div class="score-sep">:</div>
+        <div class="score-col">
+          <div class="score-col-name">${mac.dep}</div>
+          <div class="score-btns">
+            <button class="s-btn" onclick="changeScore('dep',-1)">−</button>
+            <div class="s-num" id="score-dep">0</div>
+            <button class="s-btn" onclick="changeScore('dep',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="submit-btn" id="submit-btn" onclick="tahminGonder()">Tahminimi Gönder →</button>
+    <div class="loading" id="loading-submit"><span class="sm-spin"></span>Kaydediliyor...</div>
+    <div class="success-box" id="success-submit">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Kaydedildi!</div>
+      <div class="success-text">Skor tahminin başarıyla gönderildi. Bol şans!</div>
+    </div>
+    <div class="error-box" id="error-submit"></div>`;
+}
+
+function kapalıGoster(msg) {
+  document.getElementById('match-container').innerHTML = `
+    <div class="closed-box">
+      <div class="closed-icon">🔒</div>
+      <div class="closed-title">Yarışma Kapalı</div>
+      <div class="closed-text">${msg}</div>
+    </div>`;
+  document.getElementById('match-date-label').textContent = new Date().toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});
+}
+
+function tahminGonder() {
+  const username = document.getElementById('username').value.trim();
+  if (!username) {
+    document.getElementById('username-error').classList.add('show');
+    setTimeout(() => document.getElementById('username-error').classList.remove('show'), 3000);
+    document.getElementById('username').focus();
+    return;
+  }
+  if (!guncelMac) { alert('Maç bilgisi yüklenemedi!'); return; }
+
+  const storageKey = `zaferbet_${guncelMac.macId}_${username.toLowerCase()}`;
+  if (localStorage.getItem(storageKey)) {
+    document.getElementById('error-submit').textContent = '⚡ Bu maça zaten katıldınız!';
+    document.getElementById('error-submit').classList.add('show');
+    setTimeout(() => document.getElementById('error-submit').classList.remove('show'), 4000);
+    return;
+  }
+
+  const secim = `${guncelMac.ev} ${scoreValues.ev} - ${scoreValues.dep} ${guncelMac.dep}`;
+  document.getElementById('modal-secim-text').textContent = secim;
+  document.getElementById('onay-modal').classList.add('show');
+  pendingSubmit = () => kaydet(username, secim, storageKey);
+}
+
+function kaydet(username, secim, storageKey) {
+  document.getElementById('loading-submit').classList.add('show');
+  document.getElementById('submit-btn').disabled = true;
+  const bugun = new Date().toLocaleDateString('tr-TR');
+  const params = new URLSearchParams({
+    action: 'zaferbet', sheetId: ZAFERBET_SHEET_ID,
+    kullanici: username, mac: `${guncelMac.ev} vs ${guncelMac.dep}`,
+    lig: guncelMac.lig || 'FIFA DK 2026', tarih: bugun,
+    secim: secim, macId: guncelMac.macId
+  });
+  fetch(APPS_SCRIPT_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' })
+    .finally(() => {
+      localStorage.setItem(storageKey, '1');
+      document.getElementById('loading-submit').classList.remove('show');
+      document.getElementById('success-submit').classList.add('show');
+      document.getElementById('submit-btn').disabled = true;
+    });
+}
+
+function tahminimiBul() {
+  const username = document.getElementById('username').value.trim();
+  if (!username || !guncelMac) {
+    document.getElementById('tahmin-sonuc').innerHTML = '<div class="error-box show">Önce kullanıcı adını ve günün maçını yükle!</div>';
+    return;
+  }
+  const storageKey = `zaferbet_${guncelMac.macId}_${username.toLowerCase()}`;
+  if (localStorage.getItem(storageKey)) {
+    document.getElementById('tahmin-sonuc').innerHTML = `
+      <div style="background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);border-radius:4px;padding:14px;text-align:center">
+        <div style="font-size:22px;margin-bottom:6px">✅</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;color:var(--neon);letter-spacing:1px">Bu maça katıldınız!</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">${guncelMac.ev} vs ${guncelMac.dep}</div>
+      </div>`;
+  } else {
+    document.getElementById('tahmin-sonuc').innerHTML = `
+      <div style="background:var(--bg3);border-radius:4px;padding:14px;text-align:center;font-size:12px;color:var(--muted);letter-spacing:.5px">
+        Bu maç için henüz tahmin girilmemiş.
+      </div>`;
+  }
+}
+
+guncelMaciYukle();
+</script>
+</body>
+</html>
